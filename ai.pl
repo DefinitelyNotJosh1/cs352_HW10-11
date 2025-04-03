@@ -23,7 +23,41 @@ guess(Tiles,Word,Pattern)
       Extra\=e0, 
       pattern(Word,Extra,Pattern).
 
-make_word(Tiles,Pre,Post) :- fail.
+
+% Base case: if Part is a valid word, return it as Word
+make_word(_, Part, Part) :-
+   Part \= e0,
+   is_word(Part).
+
+make_word(Tiles, e0, Word) :-
+   make_word(Tiles, [], Word).
+
+% Recursive case: select a tile, append it to Part, and recurse
+make_word(Tiles, Part, Word) :-
+   Part \= e0,
+   select(R, Tiles, RemainingTiles),
+   append(Part, [R], NewPart),
+   make_word(RemainingTiles, NewPart, Word).
+
+% base case
+% make_word(Tiles, Part, Word) :- 
+%    Part \= e0,
+%    is_word(Part).
+
+% make_word(Tiles, e0, Word) :-
+%    Tiles = [Fst|Rest],
+%    select(R, Tiles, RemainingTiles),
+%    make_word(RemainingTiles, [R], Word),
+%    make_word(Rest, [Fst], Word).
+
+% % recursive case
+% make_word(Tiles, Part, Word) :-
+%    Tiles = [Fst|Rest],
+%    select(R, Tiles, RemainingTiles),
+%    make_word(RemainingTiles, [Part|R], Word),
+%    make_word(Rest, [Part|Fst], Word).
+
+
 
 pattern(Tiles,Letter,Pattern) :- fail.
 
