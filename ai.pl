@@ -24,42 +24,101 @@ guess(Tiles,Word,Pattern)
       pattern(Word,Extra,Pattern).
 
 
+
+
 % Base case: if Part is a valid word, return it as Word
 make_word(_, Part, Part) :-
-   Part \= e0,
-   is_word(Part).
+    Part \= e0,
+    is_word(Part).
 
+% Start building the word from e0
 make_word(Tiles, e0, Word) :-
-   make_word(Tiles, [], Word).
+    make_word(Tiles, [], Word).
 
 % Recursive case: select a tile, append it to Part, and recurse
 make_word(Tiles, Part, Word) :-
-   Part \= e0,
-   select(R, Tiles, RemainingTiles),
-   append(Part, [R], NewPart),
-   make_word(RemainingTiles, NewPart, Word).
+    select(R, Tiles, RemainingTiles),
+    append(Part, [R], NewPart),
+    make_word(RemainingTiles, NewPart, Word).
 
-% base case
-% make_word(Tiles, Part, Word) :- 
+% Pattern: highlight Letter in its position
+pattern([Letter | Rest], Letter, [Letter | RestPattern]) :-
+    replace_with_spaces(Rest, RestPattern).
+
+pattern([Head | Rest], Letter, [' ' | RestPattern]) :-
+    pattern(Rest, Letter, RestPattern).
+
+% Helper: replace all elements with spaces
+replace_with_spaces([], []).
+replace_with_spaces([_ | Rest], [' ' | RestPattern]) :-
+    replace_with_spaces(Rest, RestPattern).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% % Base case: if Part is a valid word, return it as Word
+% make_word(_, Part, Part) :-
 %    Part \= e0,
 %    is_word(Part).
 
 % make_word(Tiles, e0, Word) :-
-%    Tiles = [Fst|Rest],
-%    select(R, Tiles, RemainingTiles),
-%    make_word(RemainingTiles, [R], Word),
-%    make_word(Rest, [Fst], Word).
+%    make_word(Tiles, [], Word).
 
-% % recursive case
+% % Recursive case: select a tile, append it to Part, and recurse
 % make_word(Tiles, Part, Word) :-
-%    Tiles = [Fst|Rest],
+%    Part \= e0,
 %    select(R, Tiles, RemainingTiles),
-%    make_word(RemainingTiles, [Part|R], Word),
-%    make_word(Rest, [Part|Fst], Word).
+%    append(Part, [R], NewPart),
+%    make_word(RemainingTiles, NewPart, Word).
+
+% % base case
+% % make_word(Tiles, Part, Word) :- 
+% %    Part \= e0,
+% %    is_word(Part).
+
+% % make_word(Tiles, e0, Word) :-
+% %    Tiles = [Fst|Rest],
+% %    select(R, Tiles, RemainingTiles),
+% %    make_word(RemainingTiles, [R], Word),
+% %    make_word(Rest, [Fst], Word).
+
+% % % recursive case
+% % make_word(Tiles, Part, Word) :-
+% %    Tiles = [Fst|Rest],
+% %    select(R, Tiles, RemainingTiles),
+% %    make_word(RemainingTiles, [Part|R], Word),
+% %    make_word(Rest, [Part|Fst], Word).
 
 
+% % main predicate
+% pattern(Tiles, Letter, Pattern) :-
+%    member(Letter, Tiles),
+%    member(Letter, Pattern)
 
-pattern(Tiles,Letter,Pattern) :- fail.
+% % base case
+% pattern([], _, []).
+
+% pattern([Letter | Rest], Letter, Pattern) :-
+%     Pattern = [Letter | RestPattern],
+%     replace_with_spaces(Rest, RestPattern).
+
+% pattern([Head | Rest], Letter, Pattern) :-
+%     Pattern = [' ' | RestPattern],
+%     pattern(Rest, Letter, RestPattern).
+
+% replace_with_spaces([], []).
+% replace_with_spaces([_ | Rest], [' ' | RestPattern]) :-
+%     replace_with_spaces(Rest, RestPattern).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
