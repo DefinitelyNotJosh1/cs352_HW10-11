@@ -24,22 +24,33 @@ guess(Tiles,Word,Pattern)
       pattern(Word,Extra,Pattern).
 
 
+make_word(Tiles, Part, Word) :-
+   Part \= e0,
+   append([Part], Tiles, Word),
+   is_word(Word).
+
+make_word(Tiles, Part, Word) :-
+   select(L, Tiles, Rest),
+   % make_word(Rest, L, Word),
+   append([L], Rest, NewWord),
+   NewWord = [Tile|NewTiles],
+   make_word(NewTiles, Tile, Word).
 
 
 % Base case: if Part is a valid word, return it as Word
-make_word(_, Part, Part) :-
-    Part \= e0,
-    is_word(Part).
+% make_word(_, Part, Part) :-
+%     Part \= e0,
+%     is_word(Part).
 
-% Start building the word from e0
-make_word(Tiles, e0, Word) :-
-    make_word(Tiles, [], Word).
+% % Start building the word from e0
+% make_word(Tiles, e0, Word) :-
+%     make_word(Tiles, [], Word).
 
-% Recursive case: select a tile, append it to Part, and recurse
-make_word(Tiles, Part, Word) :-
-    select(R, Tiles, RemainingTiles),
-    append(Part, [R], NewPart),
-    make_word(RemainingTiles, NewPart, Word).
+% % Recursive case: select a tile, append it to Part, and recurse
+% make_word(Tiles, Part, Word) :-
+%     select(R, Tiles, RemainingTiles),
+%     append(Part, [R], NewPart),
+%     make_word(RemainingTiles, NewPart, Word).
 
 % Pattern: highlight Letter in its position
 pattern([Letter | Rest], Letter, [Letter | RestPattern]) :-
