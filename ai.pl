@@ -24,34 +24,18 @@ guess(Tiles,Word,Pattern)
       pattern(Word,Extra,Pattern).
 
 
+% Base case: Found a word in the trie
+make_word(_Tiles, Part, Word) :-
+    atom_chars(Part, Word),
+    is_word(Word).
+
+% Recusive case
 make_word(Tiles, Part, Word) :-
-   Part \= e0,
-   append([Part], Tiles, Word),
-   is_word(Word).
+    select(Tile, Tiles, RestTiles),      % select arbitrary letter
+    trie(Part, Tile, NewPart),           % move on with that letter in the trie
+    make_word(RestTiles, NewPart, Word). % make the rest of the word, letter in front of word
 
-make_word(Tiles, Part, Word) :-
-   select(L, Tiles, Rest),
-   % make_word(Rest, L, Word),
-   append([L], Rest, NewWord),
-   NewWord = [Tile|NewTiles],
-   make_word(NewTiles, Tile, Word).
-
-
-% Base case: if Part is a valid word, return it as Word
-% make_word(_, Part, Part) :-
-%     Part \= e0,
-%     is_word(Part).
-
-% % Start building the word from e0
-% make_word(Tiles, e0, Word) :-
-%     make_word(Tiles, [], Word).
-
-% % Recursive case: select a tile, append it to Part, and recurse
-% make_word(Tiles, Part, Word) :-
-%     select(R, Tiles, RemainingTiles),
-%     append(Part, [R], NewPart),
-%     make_word(RemainingTiles, NewPart, Word).
-
+   
 % Pattern: highlight Letter in its position
 pattern([Letter | Rest], Letter, [Letter | RestPattern]) :-
     replace_with_spaces(Rest, RestPattern).
@@ -63,74 +47,6 @@ pattern([Head | Rest], Letter, [' ' | RestPattern]) :-
 replace_with_spaces([], []).
 replace_with_spaces([_ | Rest], [' ' | RestPattern]) :-
     replace_with_spaces(Rest, RestPattern).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-% % Base case: if Part is a valid word, return it as Word
-% make_word(_, Part, Part) :-
-%    Part \= e0,
-%    is_word(Part).
-
-% make_word(Tiles, e0, Word) :-
-%    make_word(Tiles, [], Word).
-
-% % Recursive case: select a tile, append it to Part, and recurse
-% make_word(Tiles, Part, Word) :-
-%    Part \= e0,
-%    select(R, Tiles, RemainingTiles),
-%    append(Part, [R], NewPart),
-%    make_word(RemainingTiles, NewPart, Word).
-
-% % base case
-% % make_word(Tiles, Part, Word) :- 
-% %    Part \= e0,
-% %    is_word(Part).
-
-% % make_word(Tiles, e0, Word) :-
-% %    Tiles = [Fst|Rest],
-% %    select(R, Tiles, RemainingTiles),
-% %    make_word(RemainingTiles, [R], Word),
-% %    make_word(Rest, [Fst], Word).
-
-% % % recursive case
-% % make_word(Tiles, Part, Word) :-
-% %    Tiles = [Fst|Rest],
-% %    select(R, Tiles, RemainingTiles),
-% %    make_word(RemainingTiles, [Part|R], Word),
-% %    make_word(Rest, [Part|Fst], Word).
-
-
-% % main predicate
-% pattern(Tiles, Letter, Pattern) :-
-%    member(Letter, Tiles),
-%    member(Letter, Pattern)
-
-% % base case
-% pattern([], _, []).
-
-% pattern([Letter | Rest], Letter, Pattern) :-
-%     Pattern = [Letter | RestPattern],
-%     replace_with_spaces(Rest, RestPattern).
-
-% pattern([Head | Rest], Letter, Pattern) :-
-%     Pattern = [' ' | RestPattern],
-%     pattern(Rest, Letter, RestPattern).
-
-% replace_with_spaces([], []).
-% replace_with_spaces([_ | Rest], [' ' | RestPattern]) :-
-%     replace_with_spaces(Rest, RestPattern).
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Assignment 11
