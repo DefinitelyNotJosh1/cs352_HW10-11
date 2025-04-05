@@ -1,3 +1,6 @@
+% Author: Steven Libby, Joshua Krasnogorov
+% Homework 10 and 11: Scrabble AI
+
 :- [scrabble].
 :- [trie].
 
@@ -33,7 +36,7 @@ make_word(_Tiles, Part, Word) :-
 make_word(Tiles, Part, Word) :-
     select(Tile, Tiles, RestTiles),      % select arbitrary letter
     trie(Part, Tile, NewPart),           % move on with that letter in the trie
-    make_word(RestTiles, NewPart, Word). % make the rest of the word, letter in front of word
+    make_word(RestTiles, NewPart, Word). % make the rest of the word
 
    
 % Pattern: highlight Letter in its position
