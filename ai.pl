@@ -67,7 +67,42 @@ guess(Tiles,Board,Row,Col,Dir,Word,NewBoard)
      pattern(Word,X,Pattern),
      place_word(Row,Col,Dir,Word,Pattern,Board,NewBoard).
 
-place_word(R,C,Dir,Tiles,Pattern,Board,NewBoard) :- fail.
+% Dir == right case
+place_word(R,C,Dir,Tiles,Pattern,Board,NewBoard) :-
+    % R >= 0, R =< 14,
+    % C >= 0, C =< 14,
+    partition_list(Board, [[Before],[Row|After]]),
+    length(Before, R),
+    partition_list(Row, [[list1],[list2],[list3]]),
+    Pattern == list2,
+    make_word(Tiles, _, Word),
+    Pattern = Word,
+    append([[list1],Word,[list3]], NewRow),
+    append([[Before],NewRow,[After]], NewBoard),
+    valid_board(NewBoard).
+
+
+% Dir == down case
+% place_word(R,C,down,Tiles,Pattern,Board,NewBoard) :-
+%     R >= 0, R =< 14,
+%     C >= 0, C =< 14,
+%     transpose(Board, TBoard),
+%     select(Row, TBoard, RestBoard),
+%     list2 == Pattern,
+%     Pattern = make_word(),
+%     transpose(NewBoard, TBoard),
+%     valid_board(NewBoard).
+
+
+partition([], [], []).
+partition([H|L], [H|S], T) :- partition(L,S,T).
+partition([H|L], S, [H|T]) :- partition(L,S,T).
+
+partition_list([],[]).
+partition_list([H|T], [[H|Y]|P]) :-
+	partition(T, Y, Z),
+	partition_list(Z, P).
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
