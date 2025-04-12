@@ -43,7 +43,7 @@ make_word(Tiles, Part, Word) :-
 pattern([Letter | Rest], Letter, [Letter | RestPattern]) :-
     replace_with_spaces(Rest, RestPattern).
 
-pattern([Head | Rest], Letter, [' ' | RestPattern]) :-
+pattern([_Head | Rest], Letter, [' ' | RestPattern]) :-
     pattern(Rest, Letter, RestPattern).
 
 % Helper: replace all elements with spaces
@@ -61,48 +61,52 @@ replace_with_spaces([_ | Rest], [' ' | RestPattern]) :-
 % a Board
 % a Row, Col, Dir for the guess,
 % and the NewBoard which is the result of putting Word at position Row,Col,Dir on Board
+
 guess(Tiles,Board,Row,Col,Dir,Word,NewBoard) 
   :- make_word([X|Tiles],e0,Word),
      X \= e0,
      pattern(Word,X,Pattern),
      place_word(Row,Col,Dir,Word,Pattern,Board,NewBoard).
 
+
+
 % Dir == right case
-place_word(R,C,Dir,Tiles,Pattern,Board,NewBoard) :-
-    % R >= 0, R =< 14,
-    % C >= 0, C =< 14,
-    partition_list(Board, [[Before],[Row|After]]),
-    length(Before, R),
-    partition_list(Row, [[list1],[list2],[list3]]),
-    Pattern == list2,
-    make_word(Tiles, _, Word),
-    Pattern = Word,
-    append([[list1],Word,[list3]], NewRow),
-    append([[Before],NewRow,[After]], NewBoard),
-    valid_board(NewBoard).
-
-
-% Dir == down case
-% place_word(R,C,down,Tiles,Pattern,Board,NewBoard) :-
-%     R >= 0, R =< 14,
-%     C >= 0, C =< 14,
-%     transpose(Board, TBoard),
-%     select(Row, TBoard, RestBoard),
-%     list2 == Pattern,
-%     Pattern = make_word(),
-%     transpose(NewBoard, TBoard),
+% place_word(R,C,right,Word,Pattern,Board,NewBoard) :-
+%     % R is >= 0, R is =< 14,
+%     % C is >= 0, C is =< 14,
+%     partition_list(Board, [Before,[Row], After]),
+%     length(Before, R),
+%     partition_list(Row, [List1,List2,List3]),
+%     Pattern = List2,
+%     % Pattern = Word,
+%     append([List1,Word,List3], NewRow),
+%     append([Before,[NewRow],After], NewBoard),
 %     valid_board(NewBoard).
 
+% place_word(R,C,down,Tiles,Pattern,Board,NewBoard) :-
+%     transpose(Board, TBoard),
+%     place_word(C,R,Dir,Tiles,Pattern,TBoard,ReturnBoard),
+%     transpose(NewBoard, ReturnBoard),
+%     valid_board(ReturnBoard).
 
-partition([], [], []).
-partition([H|L], [H|S], T) :- partition(L,S,T).
-partition([H|L], S, [H|T]) :- partition(L,S,T).
 
-partition_list([],[]).
-partition_list([H|T], [[H|Y]|P]) :-
-	partition(T, Y, Z),
-	partition_list(Z, P).
+% Dir == right case
+place_word(R, C, right, Word, Pattern, Board, NewBoard) :-
+    append(BeforeRows, [Row|AfterRows], Board), % Find a Row in the Board
+    length(BeforeRows, R),                      % Determine Row index R
+    append(BeforeCols, RestOfRow, Row),         % Find a starting position in the Row
+    length(BeforeCols, C),                      % Determine Column index C
+    append(Pattern, AfterCols, RestOfRow),      %    Match the Pattern and get suffix
+    append(BeforeCols, Word, TempRow),          % Construct the start of the new row
+    append(TempRow, AfterCols, NewRow),         % Construct the full new row
+    append(BeforeRows, [NewRow|AfterRows], NewBoard), % Construct the new board
+    valid_board(NewBoard).                      % Check if the resulting board is valid
 
+% Dir == down case: Transpose, place right, transpose back.
+place_word(R, C, down, Word, Pattern, Board, NewBoard) :-
+    transpose(Board, TBoard),
+    place_word(C, R, right, Word, Pattern, TBoard, TempNewTBoard),
+    transpose(TempNewTBoard, NewBoard).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
