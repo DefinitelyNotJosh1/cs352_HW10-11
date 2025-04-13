@@ -68,35 +68,13 @@ guess(Tiles,Board,Row,Col,Dir,Word,NewBoard)
      pattern(Word,X,Pattern),
      place_word(Row,Col,Dir,Word,Pattern,Board,NewBoard).
 
-
-
-% Dir == right case
-% place_word(R,C,right,Word,Pattern,Board,NewBoard) :-
-%     % R is >= 0, R is =< 14,
-%     % C is >= 0, C is =< 14,
-%     partition_list(Board, [Before,[Row], After]),
-%     length(Before, R),
-%     partition_list(Row, [List1,List2,List3]),
-%     Pattern = List2,
-%     % Pattern = Word,
-%     append([List1,Word,List3], NewRow),
-%     append([Before,[NewRow],After], NewBoard),
-%     valid_board(NewBoard).
-
-% place_word(R,C,down,Tiles,Pattern,Board,NewBoard) :-
-%     transpose(Board, TBoard),
-%     place_word(C,R,Dir,Tiles,Pattern,TBoard,ReturnBoard),
-%     transpose(NewBoard, ReturnBoard),
-%     valid_board(ReturnBoard).
-
-
 % Dir == right case
 place_word(R, C, right, Word, Pattern, Board, NewBoard) :-
     append(BeforeRows, [Row|AfterRows], Board), % Find a Row in the Board
-    length(BeforeRows, R),                      % Determine Row index R
+    length(BeforeRows, R),                      % Make sure Row is at index R
     append(BeforeCols, RestOfRow, Row),         % Find a starting position in the Row
-    length(BeforeCols, C),                      % Determine Column index C
-    append(Pattern, AfterCols, RestOfRow),      %    Match the Pattern and get suffix
+    length(BeforeCols, C),                      % Make sure Column is at index C
+    append(Pattern, AfterCols, RestOfRow),      % Match the Pattern and get suffix
     append(BeforeCols, Word, TempRow),          % Construct the start of the new row
     append(TempRow, AfterCols, NewRow),         % Construct the full new row
     append(BeforeRows, [NewRow|AfterRows], NewBoard), % Construct the new board
@@ -105,6 +83,7 @@ place_word(R, C, right, Word, Pattern, Board, NewBoard) :-
 % Dir == down case: Transpose, place right, transpose back.
 place_word(R, C, down, Word, Pattern, Board, NewBoard) :-
     transpose(Board, TBoard),
+    % Transposed board has swapped Rows and Columns
     place_word(C, R, right, Word, Pattern, TBoard, TempNewTBoard),
     transpose(TempNewTBoard, NewBoard).
 
