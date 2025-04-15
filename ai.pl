@@ -40,15 +40,15 @@ make_word(Tiles, Part, Word) :-
 
    
 % Pattern: highlight Letter in its position
-pattern([Letter | Rest], Letter, [Letter | RestPattern]) :-
+pattern([Letter|Rest], Letter, [Letter|RestPattern]) :-
     replace_with_spaces(Rest, RestPattern).
 
-pattern([_Head | Rest], Letter, [' ' | RestPattern]) :-
+pattern([_Head|Rest], Letter, [' '|RestPattern]) :-
     pattern(Rest, Letter, RestPattern).
 
 % Helper: replace all elements with spaces
 replace_with_spaces([], []).
-replace_with_spaces([_ | Rest], [' ' | RestPattern]) :-
+replace_with_spaces([_|Rest], [' '|RestPattern]) :-
     replace_with_spaces(Rest, RestPattern).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
